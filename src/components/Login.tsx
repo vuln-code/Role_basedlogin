@@ -5,12 +5,13 @@ import {
   LockKeyhole,
   MailCheck,
   ShieldCheck,
-  Sparkles,
+  ArrowRight,
 } from 'lucide-react'
 import { useState, type FormEvent } from 'react'
 import { useAuth } from '../context/AuthContext'
 import { isSupabaseConfigured } from '../lib/supabase'
 import { BrandMark } from './BrandMark'
+import { AnimatedInputShell, BottomGradient, BoxReveal, TechOrbitDisplay } from './ui/modern-animated-sign-in'
 
 interface FieldErrors {
   email?: string
@@ -102,47 +103,33 @@ export function Login() {
   }
 
   return (
-    <main className="login-page">
-      <div className="login-ambient" aria-hidden="true">
-        <span className="ambient-one" />
-        <span className="ambient-two" />
-        <span className="ambient-grid" />
-      </div>
-
-      <section className="login-showcase" aria-label="Application overview">
+    <main className="af-sign-in">
+      <section className="af-story" aria-label="Application overview">
         <BrandMark />
-        <div className="showcase-copy">
-          <span className="eyebrow"><Sparkles size={14} /> Secure workspace</span>
-          <h1>One identity.<br />The right workspace.</h1>
-          <p>
-            AccessFlow routes every authenticated account to a protected experience built
-            for its assigned role.
-          </p>
-          <div className="role-preview" aria-label="Supported roles">
-            {['Admin', 'Manager', 'User'].map((role, index) => (
-              <div key={role} className={`role-preview-item role-${index + 1}`}>
-                <span>{role.slice(0, 1)}</span>
-                <div>
-                  <strong>{role}</strong>
-                  <small>{index === 0 ? 'System overview' : index === 1 ? 'Team workspace' : 'Personal profile'}</small>
-                </div>
-              </div>
-            ))}
-          </div>
+        <div className="af-story-copy">
+          <span className="af-kicker">Your people. Your possibilities.</span>
+          <h1>Great things start<br />with <span>the right access.</span></h1>
+          <p>A shared space for your team. A personal workspace for you. Everything connected, simply.</p>
         </div>
-        <p className="showcase-security"><ShieldCheck size={16} /> Database-enforced access with PostgreSQL RLS</p>
+        <TechOrbitDisplay />
+        <div className="af-story-footer">
+          <span><ShieldCheck size={14} /> Secure by design</span>
+          <span>Admin · Manager · Member</span>
+        </div>
       </section>
 
-      <section className="login-panel">
-        <div className="login-card">
+      <section className="af-form-panel">
+        <div className="af-form-card">
           <div className="mobile-brand"><BrandMark /></div>
+          <BoxReveal>
           <span className="eyebrow">{mode === 'login' ? 'Welcome back' : 'Account recovery'}</span>
-          <h2>{mode === 'login' ? 'Sign in to your account' : 'Reset your password'}</h2>
+          <h2>{mode === 'login' ? 'Your workspace awaits.' : 'Reset your password'}</h2>
           <p className="login-subtitle">
             {mode === 'login'
-              ? 'Use the credentials created for you by the project administrator.'
-              : 'Enter your account email. If it exists, Supabase will send a secure recovery link.'}
+              ? 'Sign in to pick up where you left off.'
+              : 'Enter your account email to request a secure recovery link.'}
           </p>
+          </BoxReveal>
 
           {notice && mode === 'login' && (
             <div className="form-success" role="status"><MailCheck size={17} /> {notice}</div>
@@ -164,10 +151,11 @@ export function Login() {
               <div className="field-group">
                 <div className="field-label-row">
                   <label htmlFor="password">Password</label>
-                  <button type="button" className="text-link" onClick={() => changeMode('forgot')}>
+                  <button type="button" className="text-link" onClick={() => changeMode('forgot')} disabled={isSubmitting}>
                     Forgot Password?
                   </button>
                 </div>
+                <AnimatedInputShell>
                 <div className={`input-shell password-shell ${errors.password ? 'has-error' : ''}`}>
                   <input
                     id="password"
@@ -194,6 +182,7 @@ export function Login() {
                     {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                   </button>
                 </div>
+                </AnimatedInputShell>
                 {errors.password && <p id="password-error" className="field-error">{errors.password}</p>}
               </div>
 
@@ -201,7 +190,9 @@ export function Login() {
 
               <button className="primary-button" type="submit" disabled={isSubmitting || !isSupabaseConfigured}>
                 {isSubmitting ? <span className="button-spinner" aria-hidden="true" /> : <LockKeyhole size={17} />}
-                {isSubmitting ? 'Signing in...' : 'Sign in securely'}
+                {isSubmitting ? 'Signing in...' : 'Sign in'}
+                {!isSubmitting && <ArrowRight size={16} />}
+                <BottomGradient />
               </button>
             </form>
           ) : (
@@ -228,6 +219,7 @@ export function Login() {
                 <button className="primary-button" type="submit" disabled={isSubmitting || !isSupabaseConfigured}>
                   {isSubmitting ? <span className="button-spinner" aria-hidden="true" /> : <MailCheck size={17} />}
                   {isSubmitting ? 'Sending...' : 'Send recovery link'}
+                  <BottomGradient />
                 </button>
               )}
 
@@ -237,7 +229,8 @@ export function Login() {
             </form>
           )}
 
-          <p className="login-note"><ShieldCheck size={15} /> Your password is handled only by Supabase Auth.</p>
+          <p className="login-note"><ShieldCheck size={14} /> A secure space, just for your team.</p>
+          <p className="af-form-footer">Need an account? Contact your workspace administrator.</p>
         </div>
       </section>
     </main>
@@ -258,6 +251,7 @@ function EmailField({
   return (
     <div className="field-group">
       <label htmlFor="email">Email address</label>
+      <AnimatedInputShell>
       <div className={`input-shell ${error ? 'has-error' : ''}`}>
         <input
           id="email"
@@ -273,6 +267,7 @@ function EmailField({
           disabled={disabled}
         />
       </div>
+      </AnimatedInputShell>
       {error && <p id="email-error" className="field-error">{error}</p>}
     </div>
   )
