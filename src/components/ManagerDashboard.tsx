@@ -14,6 +14,7 @@ import {
 } from './DashboardUI'
 import { DashboardLayout } from './DashboardLayout'
 import { DashboardInsight } from './ui/DashboardInsight'
+import { RecentProfiles, RefreshDirectory } from './WorkspaceDetails'
 
 export function ManagerDashboard({ profile }: { profile: Profile }) {
   const [members, setMembers] = useState<Profile[]>([])
@@ -53,7 +54,7 @@ export function ManagerDashboard({ profile }: { profile: Profile }) {
       <PageHeading
         eyebrow="Team workspace"
         title={`Welcome, ${profile.full_name.split(' ')[0]}.`}
-        description="Review only the members assigned to you by the protected manager relationship."
+        description="Your people, in one place. Find member details and stay on top of your assigned team."
       />
 
       <section className="stats-grid manager-stats" aria-label="Team statistics">
@@ -76,16 +77,18 @@ export function ManagerDashboard({ profile }: { profile: Profile }) {
         />
       )}
 
+      {!loading && !error && <RecentProfiles profiles={members} title="Recently created member accounts" />}
+
       <Panel
         id="team"
         title="Assigned team"
-        description="This query is restricted by manager_id and database policy."
+        description="Find people within your assigned team."
         controls={
-          <label className="search-control">
+          <><RefreshDirectory busy={loading} onRefresh={() => void loadMembers()} /><label className="search-control">
             <Search size={16} />
             <span className="sr-only">Search team members</span>
             <input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search team" />
-          </label>
+          </label></>
         }
       >
         {loading ? (

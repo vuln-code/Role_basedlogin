@@ -1,0 +1,40 @@
+/* Quiet slate surfaces, warm admin accents, blue team accents, and green member accents. */
+.dashboard { --bg: #101315; --surface: #191e21; --border: #30373c; --muted: #a4aeb4; --subtle: #8c989f; background: var(--bg); }
+.dashboard.role-theme-admin { --accent: #d0ab71; --accent-strong: #a7834c; --accent-soft: #d0ab7119; --accent-glow: transparent; }
+.dashboard.role-theme-manager { --accent: #8cb3c9; --accent-strong: #5988a2; --accent-soft: #8cb3c919; --accent-glow: transparent; }
+.dashboard.role-theme-user { --accent: #91b8a4; --accent-strong: #5e9077; --accent-soft: #91b8a419; --accent-glow: transparent; }
+.dashboard .sidebar { background: #15191c; backdrop-filter: none; }
+.dashboard .topbar { background: #101315f5; }
+.dashboard .brand-icon { background: var(--accent); color: #101315; box-shadow: none; }
+.dashboard .panel, .dashboard .stat-card, .dashboard .dashboard-insight { background: #191e21; box-shadow: none; }
+.dashboard .stat-card::after, .dashboard .dashboard-insight-main::after { display: none; }
+.dashboard .page-heading h1 { font-weight: 550; letter-spacing: -.045em; }
+.dashboard .page-heading p { max-width: 42rem; }
+.dashboard .role-badge-admin { color: #e1c395; background: #d0ab7119; }
+.dashboard .role-badge-manager { color: #abd0e4; background: #8cb3c919; }
+.dashboard .role-badge-user { color: #b1d3c1; background: #91b8a419; }
+.dashboard .dashboard-insight-track span { background: var(--accent); }
+.dashboard .dashboard-insight-details { background: #14191c; }
+.dashboard .panel-controls input, .dashboard .panel-controls select { background: #101518; }
+.workspace-action { display: inline-flex; align-items: center; justify-content: center; gap: .5rem; min-height: 2.4rem; padding: .5rem .8rem; border: 1px solid var(--border); border-radius: .6rem; background: #20272b; color: #e4e9ec; font-size: .73rem; cursor: pointer; white-space: nowrap; }
+.workspace-action:hover:not(:disabled) { border-color: var(--accent); background: #293236; }
+.assignment-review { margin: 1.25rem 0; padding: 1.3rem 1.5rem; display: flex; align-items: center; justify-content: space-between; gap: 1.2rem; border: 1px solid #d0ab7140; border-left: 3px solid var(--accent); border-radius: .8rem; background: #d0ab7108; }
+.workspace-caption { color: var(--accent); font-size: .63rem; text-transform: uppercase; letter-spacing: .12em; font-weight: 700; }
+.assignment-review h2 { margin: .4rem 0; font-size: 1rem; font-weight: 600; }
+.assignment-review p { margin: 0; font-size: .75rem; color: var(--muted); line-height: 1.6; }
+.workspace-people { list-style: none; padding: 0 1.25rem; margin: 0; }
+.workspace-people li { display: flex; align-items: center; gap: .75rem; padding: 1rem 0; border-bottom: 1px solid var(--border); }
+.workspace-people li:last-child { border-bottom: 0; }
+.workspace-person-avatar { flex-shrink: 0; display: grid; place-items: center; width: 2.35rem; height: 2.35rem; border: 1px solid var(--border); border-radius: 50%; color: var(--accent); background: var(--accent-soft); font-size: .8rem; }
+.workspace-people li > div { flex: 1; min-width: 0; display: grid; gap: .3rem; }
+.workspace-people strong { font-size: .8rem; overflow-wrap: anywhere; }
+.workspace-people li > div > span { font-size: .67rem; color: var(--muted); }
+.workspace-empty { padding: 1rem 1.25rem; color: var(--muted); font-size: .8rem; }
+.workspace-checklist { list-style: none; padding: 1.25rem; margin: 0; display: grid; gap: 1.3rem; }
+.workspace-checklist li { display: flex; gap: .8rem; align-items: flex-start; }
+.workspace-checklist svg { color: var(--accent); flex-shrink: 0; margin-top: .1rem; }
+.workspace-checklist strong { font-size: .85rem; }
+.workspace-checklist p { margin: .3rem 0 0; color: var(--muted); font-size: .75rem; line-height: 1.6; }
+.workspace-footnote { border-top: 1px solid var(--border); padding: .85rem 1.25rem; font-size: .7rem; color: var(--muted); }
+.signup-guidance { font-size: .7rem; color: #a4b0c6; line-height: 1.6; margin: .5rem 0 0; }
+@media (max-width: 760px) { .assignment-review { align-items: stretch; flex-direction: column; padding: 1.1rem; } .dashboard .panel-controls { flex-wrap: wrap; } }

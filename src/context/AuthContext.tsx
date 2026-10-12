@@ -29,6 +29,7 @@ interface AuthContextValue {
   recoveryError: string | null
   isSigningOut: boolean
   signIn: (email: string, password: string) => Promise<void>
+  signUp: (fullName: string, email: string, password: string) => Promise<void>
   requestPasswordReset: (email: string) => Promise<void>
   updateRecoveredPassword: (password: string) => Promise<void>
   leaveRecovery: () => Promise<void>
@@ -227,6 +228,27 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     await hydrateSession(data.session)
   }, [hydrateSession])
 
+  const signUp = useCallback(async (fullName: string, email: string, password: string) => {
+    setError(null)
+    setNotice(null)
+    const { data, error: signupError } = await requireSupabase().auth.signUp({
+      email: email.trim(),
+      password,
+      options: {
+        data: { full_name: fullName.trim() },
+        emailRedirectTo: new URL('/', window.location.origin).toString(),
+      },
+    })
+    if (signupError) {
+      if (signupError.status === 429) throw new Error('Too many email requests. Please wait before trying again.')
+      if (signupError.code === 'signup_disabled') throw new Error('Registration is currently closed. Contact your workspace administrator.')
+      if (signupError.code === 'weak_password') throw new Error('Choose a stronger password that meets the account password policy.')
+      if (signupError.message.toLowerCase().includes('fetch')) throw new Error('Unable to connect. Check your connection and try again.')
+      throw new Error('Registration could not be completed. If you already have an account, sign in or reset your password.')
+    }
+    if (data.session) await hydrateSession(data.session)
+  }, [hydrateSession])
+
   const requestPasswordReset = useCallback(async (email: string) => {
     setError(null)
     const client = requireSupabase()
@@ -333,6 +355,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       recoveryError,
       isSigningOut,
       signIn,
+      signUp,
       requestPasswordReset,
       updateRecoveredPassword,
       leaveRecovery,
@@ -349,6 +372,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       recoveryError,
       isSigningOut,
       signIn,
+      signUp,
       requestPasswordReset,
       updateRecoveredPassword,
       leaveRecovery,

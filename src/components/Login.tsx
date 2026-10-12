@@ -11,6 +11,7 @@ import { useState, type FormEvent } from 'react'
 import { useAuth } from '../context/AuthContext'
 import { isSupabaseConfigured } from '../lib/supabase'
 import { BrandMark } from './BrandMark'
+import { SignupForm } from './SignupForm'
 import { AnimatedInputShell, BottomGradient, BoxReveal, TechOrbitDisplay } from './ui/modern-animated-sign-in'
 
 interface FieldErrors {
@@ -40,7 +41,7 @@ export function Login() {
     notice,
     clearNotice,
   } = useAuth()
-  const [mode, setMode] = useState<'login' | 'forgot'>('login')
+  const [mode, setMode] = useState<'login' | 'forgot' | 'signup'>('login')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
@@ -95,10 +96,12 @@ export function Login() {
     }
   }
 
-  const changeMode = (nextMode: 'login' | 'forgot') => {
+  const changeMode = (nextMode: 'login' | 'forgot' | 'signup') => {
     setMode(nextMode)
     setErrors({})
     setResetSent(false)
+    setPassword('')
+    setShowPassword(false)
     clearNotice()
   }
 
@@ -122,10 +125,10 @@ export function Login() {
         <div className="af-form-card">
           <div className="mobile-brand"><BrandMark /></div>
           <BoxReveal>
-          <span className="eyebrow">{mode === 'login' ? 'Welcome back' : 'Account recovery'}</span>
-          <h2>{mode === 'login' ? 'Your workspace awaits.' : 'Reset your password'}</h2>
+          <span className="eyebrow">{mode === 'signup' ? 'Join AccessFlow' : mode === 'login' ? 'Welcome back' : 'Account recovery'}</span>
+          <h2>{mode === 'signup' ? 'Make yourself at home.' : mode === 'login' ? 'Your workspace awaits.' : 'Reset your password'}</h2>
           <p className="login-subtitle">
-            {mode === 'login'
+            {mode === 'signup' ? 'Create your account and get your own workspace.' : mode === 'login'
               ? 'Sign in to pick up where you left off.'
               : 'Enter your account email to request a secure recovery link.'}
           </p>
@@ -195,7 +198,7 @@ export function Login() {
                 <BottomGradient />
               </button>
             </form>
-          ) : (
+          ) : mode === 'signup' ? <SignupForm onBack={() => changeMode('login')} /> : (
             <form onSubmit={handleForgotPassword} noValidate>
               <EmailField
                 email={email}
@@ -230,7 +233,7 @@ export function Login() {
           )}
 
           <p className="login-note"><ShieldCheck size={14} /> A secure space, just for your team.</p>
-          <p className="af-form-footer">Need an account? Contact your workspace administrator.</p>
+          {mode !== 'signup' && <p className="af-form-footer">New here? <button className="text-link" type="button" disabled={isSubmitting} onClick={() => changeMode('signup')}>Create an account</button></p>}
         </div>
       </section>
     </main>

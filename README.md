@@ -204,6 +204,28 @@ Do not mark the database checks as passed until they have been run against the l
 - This repository cannot create or configure your external Supabase project; live auth and RLS results must be verified after setup.
 - Recovery email delivery, redirect allow-list behavior, token expiry, and the live password update require manual verification against your configured Supabase project. Supabase's default SMTP service is rate-limited.
 - Role assignment intentionally remains a trusted SQL task. There is no browser role editor.
-- The project is read-only by assignment, so profile editing and account lifecycle management are omitted.
+- Profile editing, role changes, and manager assignments remain restricted to trusted administration. Public signup creates ordinary USER accounts only.
+
+## Public signup
+
+Choose **Create an account** on the login screen. Signup collects full name, email, password, and confirmation, and uses Supabase Auth. Only `full_name` is sent as metadata; the browser never chooses a role or writes a profile directly. The existing `handle_new_auth_user` database trigger creates the profile with the hard-coded USER role.
+
+Required project settings:
+
+1. Enable **Allow new users to sign up** in Supabase Authentication settings.
+2. Ensure the profile trigger from `supabase/schema.sql` is installed. No new table or policy is required for this feature.
+3. Set the Supabase Site URL to the deployed application and allow its root URL as an authentication redirect. Local signup uses `http://localhost:5173/`; recovery also needs the existing `/reset-password` redirect.
+4. With email confirmation enabled, the app displays a check-inbox message. With confirmation disabled, Supabase returns a session and the app opens the USER dashboard. The built-in email service has delivery restrictions and shared email rate limits; use your configured SMTP service for public registration.
+
+Official references: [Supabase signup](https://supabase.com/docs/reference/javascript/auth-signup), [authentication settings](https://supabase.com/docs/guides/auth/general-configuration), and [email delivery](https://supabase.com/docs/guides/auth/auth-smtp).
+
+Browser checks use mocked Supabase responses and do not create real accounts or send emails. They cover required fields, password mismatch, signup metadata (no role), confirmation redirect, email-confirmation response, HTTP 429 response, immediate USER dashboard routing, and mobile layout. Verify an actual confirmation email and the trigger-created USER profile in the configured project before announcing public signup.
+
+## Dashboard additions
+
+- Admin: latest account registrations, unassigned-member count, a working unassigned filter, and directory refresh.
+- Manager: newest account creation dates within the assigned team, member search, and team refresh. These dates are account creation dates, not team-assignment events.
+- User: an account setup checklist using the signed-in user's email confirmation, profile creation date, team assignment, and latest sign-in date.
+- Dashboard surfaces use slate with muted role accents. All data comes from the existing authorized queries and session; no analytics, activity, or growth figures are fabricated.
 - Search operates client-side only after RLS has returned the already-authorized rows.
 - For a larger production directory, counts and filtering should move to carefully secured database functions with pagination.

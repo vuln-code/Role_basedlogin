@@ -13,11 +13,13 @@ import {
 } from './DashboardUI'
 import { DashboardLayout } from './DashboardLayout'
 import { DashboardInsight } from './ui/DashboardInsight'
+import { AssignmentReview, RecentProfiles, RefreshDirectory } from './WorkspaceDetails'
 
 export function AdminDashboard({ profile }: { profile: Profile }) {
   const [profiles, setProfiles] = useState<Profile[]>([])
   const [search, setSearch] = useState('')
   const [role, setRole] = useState<AppRole | 'ALL'>('ALL')
+  const [unassignedOnly, setUnassignedOnly] = useState(false)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
@@ -48,14 +50,15 @@ export function AdminDashboard({ profile }: { profile: Profile }) {
   }, [loadDirectory])
 
   const counts = useMemo(() => countProfilesByRole(profiles), [profiles])
-  const filtered = useMemo(() => filterProfiles(profiles, search, role), [profiles, search, role])
+  const unassigned = profiles.filter(person => person.role === 'USER' && !person.manager_id)
+  const filtered = useMemo(() => filterProfiles(profiles, search, role).filter(person => !unassignedOnly || (person.role === 'USER' && !person.manager_id)), [profiles, search, role, unassignedOnly])
 
   return (
     <DashboardLayout profile={profile}>
       <PageHeading
         eyebrow="Administration overview"
         title={`Good to see you, ${profile.full_name.split(' ')[0]}.`}
-        description="A live, read-only view of accounts authorized by the database security policy."
+        description="Keep your people organized. Review new members, team assignments, and workspace access."
       />
 
       <section className="stats-grid" aria-label="Account statistics">
@@ -66,11 +69,17 @@ export function AdminDashboard({ profile }: { profile: Profile }) {
       </section>
 
       {!loading && !error && (
+        <AssignmentReview count={unassigned.length} active={unassignedOnly} onToggle={() => { setUnassignedOnly(!unassignedOnly); setSearch(''); setRole('ALL'); document.getElementById('directory')?.scrollIntoView({ behavior: 'smooth' }) }} />
+      )}
+
+      {!loading && !error && <RecentProfiles profiles={profiles} title="Latest registrations" />}
+
+      {!loading && !error && (
         <DashboardInsight
           title="Workspace composition"
           eyebrow="Live account directory"
           value={counts.total}
-          description="Accounts visible under your admin policy. Role shares reflect the profiles currently returned by Supabase."
+          description="The people in your workspace, grouped by their current access level."
           icon={ChartNoAxesCombined}
           details={[
             { label: 'Administrators', value: String(counts.ADMIN), share: counts.total ? counts.ADMIN / counts.total * 100 : 0 },
@@ -83,9 +92,10 @@ export function AdminDashboard({ profile }: { profile: Profile }) {
       <Panel
         id="directory"
         title="User directory"
-        description="Search and filter the rows your ADMIN policy permits."
+        description={unassignedOnly ? 'Showing members without a manager. Use Show all accounts above to clear this view.' : 'Find a member by name, email, or role.'}
         controls={
           <>
+            <RefreshDirectory busy={loading} onRefresh={() => void loadDirectory()} />
             <label className="search-control">
               <Search size={16} />
               <span className="sr-only">Search users</span>
