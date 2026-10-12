@@ -106,7 +106,7 @@ export function ResetPassword() {
                 }}
                 onToggle={() => setShowPasswords((visible) => !visible)}
               />
-              <p id="password-guidance" className="password-guidance">Use 8–72 characters and avoid a previously used password.</p>
+              <p id="password-guidance" className="password-guidance">Use 8–72 characters with an uppercase letter, lowercase letter, number, and symbol. Avoid a previously used password.</p>
 
               <PasswordField
                 id="confirm-password"

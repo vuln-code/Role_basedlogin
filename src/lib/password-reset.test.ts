@@ -32,10 +32,14 @@ describe('password recovery helpers', () => {
     expect(getPasswordResetRedirect('http://localhost:5173')).toBe('http://localhost:5173/reset-password')
   })
 
-  it('validates length and matching confirmation', () => {
+  it('validates length, character requirements, and matching confirmation', () => {
     expect(validateNewPassword('', '')).toBe('Enter a new password.')
     expect(validateNewPassword('short', 'short')).toBe('Use at least 8 characters.')
-    expect(validateNewPassword('secure-pass', 'different-pass')).toBe('The passwords do not match.')
-    expect(validateNewPassword('secure-pass', 'secure-pass')).toBeNull()
+    expect(validateNewPassword('lowercase1!', 'lowercase1!')).toBe('Include at least one uppercase letter.')
+    expect(validateNewPassword('UPPERCASE1!', 'UPPERCASE1!')).toBe('Include at least one lowercase letter.')
+    expect(validateNewPassword('NoNumber!', 'NoNumber!')).toBe('Include at least one number.')
+    expect(validateNewPassword('NoSymbol1', 'NoSymbol1')).toBe('Include at least one symbol.')
+    expect(validateNewPassword('Secure1!', 'Different1!')).toBe('The passwords do not match.')
+    expect(validateNewPassword('Secure1!', 'Secure1!')).toBeNull()
   })
 })

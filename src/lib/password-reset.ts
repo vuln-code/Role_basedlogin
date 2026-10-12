@@ -31,6 +31,10 @@ export function validateNewPassword(password: string, confirmation: string) {
   if (!password) return 'Enter a new password.'
   if (password.length < 8) return 'Use at least 8 characters.'
   if (password.length > 72) return 'Use no more than 72 characters.'
+  if (!/[A-Z]/.test(password)) return 'Include at least one uppercase letter.'
+  if (!/[a-z]/.test(password)) return 'Include at least one lowercase letter.'
+  if (!/[0-9]/.test(password)) return 'Include at least one number.'
+  if (!/[^A-Za-z0-9\s]/.test(password)) return 'Include at least one symbol.'
   if (password !== confirmation) return 'The passwords do not match.'
   return null
 }

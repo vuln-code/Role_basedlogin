@@ -57,7 +57,7 @@ export function SignupForm({ onBack }: { onBack: () => void }) {
           <input id="signup-password" name="password" type={visible ? 'text' : 'password'} autoComplete="new-password" aria-describedby="signup-guidance" value={password} onChange={e => setPassword(e.target.value)} disabled={busy} required />
           <button type="button" className="password-toggle" aria-label={visible ? 'Hide password' : 'Show password'} aria-pressed={visible} onClick={() => setVisible(!visible)}>{visible ? <EyeOff size={18} /> : <Eye size={18} />}</button>
         </div></AnimatedInputShell>
-        <p id="signup-guidance" className="signup-guidance">Use 8–72 characters. Your account starts with member access.</p>
+        <p id="signup-guidance" className="signup-guidance">Use 8–72 characters with an uppercase letter, lowercase letter, number, and symbol. Your account starts with member access.</p>
       </div>
       <div className="field-group">
         <label htmlFor="signup-confirm">Confirm password</label>
