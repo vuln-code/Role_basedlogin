@@ -1,4 +1,4 @@
-import { Search, ShieldCheck, UserRound, UsersRound } from 'lucide-react'
+import { ChartNoAxesCombined, Search, ShieldCheck, UserRound, UsersRound } from 'lucide-react'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { countProfilesByRole, filterProfiles, isProfile } from '../lib/profile-utils'
 import { requireSupabase } from '../lib/supabase'
@@ -12,6 +12,7 @@ import {
   StatCard,
 } from './DashboardUI'
 import { DashboardLayout } from './DashboardLayout'
+import { DashboardInsight } from './ui/DashboardInsight'
 
 export function AdminDashboard({ profile }: { profile: Profile }) {
   const [profiles, setProfiles] = useState<Profile[]>([])
@@ -63,6 +64,21 @@ export function AdminDashboard({ profile }: { profile: Profile }) {
         <StatCard label="Managers" value={loading ? '—' : counts.MANAGER} icon={UsersRound} note="Team workspaces" />
         <StatCard label="Users" value={loading ? '—' : counts.USER} icon={UserRound} note="Personal accounts" />
       </section>
+
+      {!loading && !error && (
+        <DashboardInsight
+          title="Workspace composition"
+          eyebrow="Live account directory"
+          value={counts.total}
+          description="Accounts visible under your admin policy. Role shares reflect the profiles currently returned by Supabase."
+          icon={ChartNoAxesCombined}
+          details={[
+            { label: 'Administrators', value: String(counts.ADMIN), share: counts.total ? counts.ADMIN / counts.total * 100 : 0 },
+            { label: 'Managers', value: String(counts.MANAGER), share: counts.total ? counts.MANAGER / counts.total * 100 : 0 },
+            { label: 'Users', value: String(counts.USER), share: counts.total ? counts.USER / counts.total * 100 : 0 },
+          ]}
+        />
+      )}
 
       <Panel
         id="directory"

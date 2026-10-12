@@ -13,6 +13,7 @@ import {
   StatCard,
 } from './DashboardUI'
 import { DashboardLayout } from './DashboardLayout'
+import { DashboardInsight } from './ui/DashboardInsight'
 
 export function ManagerDashboard({ profile }: { profile: Profile }) {
   const [members, setMembers] = useState<Profile[]>([])
@@ -59,6 +60,21 @@ export function ManagerDashboard({ profile }: { profile: Profile }) {
         <StatCard label="Assigned members" value={loading ? '—' : members.length} icon={UsersRound} note="RLS-authorized team" />
         <StatCard label="Workspace role" value="MANAGER" icon={UserRound} note="Read-only access" />
       </section>
+
+      {!loading && !error && (
+        <DashboardInsight
+          title="Your team at a glance"
+          eyebrow="Assigned members"
+          value={members.length}
+          description="Only people assigned to your account are included here."
+          icon={UsersRound}
+          details={[
+            { label: 'Members shown', value: String(filteredMembers.length), share: members.length ? filteredMembers.length / members.length * 100 : 0 },
+            { label: 'Search', value: search.trim() ? 'Filtered' : 'Showing all' },
+            { label: 'Access', value: 'Read only' },
+          ]}
+        />
+      )}
 
       <Panel
         id="team"

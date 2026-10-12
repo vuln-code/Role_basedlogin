@@ -3,6 +3,7 @@ import { formatAccountDate } from '../lib/profile-utils'
 import type { Profile } from '../types'
 import { DashboardLayout } from './DashboardLayout'
 import { PageHeading, Panel, RoleBadge, StatCard } from './DashboardUI'
+import { DashboardInsight } from './ui/DashboardInsight'
 
 export function UserDashboard({ profile }: { profile: Profile }) {
   return (
@@ -17,6 +18,19 @@ export function UserDashboard({ profile }: { profile: Profile }) {
         <StatCard label="Account status" value="Active" icon={ShieldCheck} note="Authenticated session" />
         <StatCard label="Application role" value="USER" icon={UserRound} note="Personal access" />
       </section>
+
+      <DashboardInsight
+        title="Your account"
+        eyebrow="Personal workspace"
+        value={profile.full_name}
+        description="A quick view of the profile attached to your signed-in account."
+        icon={UserRound}
+        details={[
+          { label: 'Email', value: profile.email },
+          { label: 'Role', value: profile.role },
+          { label: 'Member since', value: formatAccountDate(profile.created_at) },
+        ]}
+      />
 
       <Panel id="profile" title="My profile" description="Information stored in your protected profile record.">
         <div className="personal-profile-card">
